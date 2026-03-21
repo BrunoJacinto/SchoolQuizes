@@ -22,6 +22,7 @@ import {
   PRIZE_LADDER,
   setEmailState,
   setRunSound,
+  signSession,
   submitAnswer,
   TOTAL_QUESTIONS,
   useFiftyFiftyLifeline,
@@ -370,12 +371,14 @@ export function MillionaireApp() {
       return;
     }
 
-    // Complete the session if not already completed
-    const completedSession = {
+    const now = new Date().toISOString();
+
+    // Complete the session and sign it to ensure integrity
+    const completedSession = signSession({
       ...session,
-      status: "completed" as const,
-      completedAt: session.completedAt || new Date().toISOString(),
-    };
+      status: "completed",
+      completedAt: now,
+    });
 
     setSession(completedSession);
     // Email will be sent automatically by the useEffect that watches for completed sessions
