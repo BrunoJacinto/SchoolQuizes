@@ -260,6 +260,33 @@ export function MillionaireApp() {
     void sendResultsEmail(session);
   }, [session]);
 
+  useEffect(() => {
+    if (session?.phase !== "question") {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toUpperCase();
+      const optionMap: { [key: string]: number } = {
+        A: 0,
+        B: 1,
+        C: 2,
+        D: 3,
+      };
+
+      if (key in optionMap) {
+        event.preventDefault();
+        setSelectedOption(optionMap[key]);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [session?.phase]);
+
   function handleStartRun() {
     const trimmedName = studentName.trim();
     const trimmedEmail = guardianEmail.trim();
