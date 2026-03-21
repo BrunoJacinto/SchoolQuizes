@@ -714,6 +714,15 @@ export function MillionaireApp() {
       ) : null}
 
       {toast ? <div className={styles.toast}>{toast}</div> : null}
+
+      <footer className={styles.footer}>
+        <p>
+          Desenvolvido para a família por{" "}
+          <a href="https://www.linkedin.com/in/brunojacinto/" target="_blank" rel="noopener noreferrer">
+            Bruno Jacinto
+          </a>
+        </p>
+      </footer>
     </main>
   );
 }
