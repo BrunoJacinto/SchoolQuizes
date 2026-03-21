@@ -365,6 +365,23 @@ export function MillionaireApp() {
     setToast(null);
   }
 
+  function handleQuitGame() {
+    if (!session || session.status !== "active") {
+      return;
+    }
+
+    // Complete the session if not already completed
+    const completedSession = {
+      ...session,
+      status: "completed" as const,
+      completedAt: session.completedAt || new Date().toISOString(),
+    };
+
+    setSession(completedSession);
+    // Email will be sent automatically by the useEffect that watches for completed sessions
+    setToast(t('game.quittingGame'));
+  }
+
   function handleRetryEmail() {
     if (!session || session.status !== "completed") {
       return;
@@ -542,6 +559,9 @@ export function MillionaireApp() {
                   <div className={styles.statsRow}>
                     <span>{getCorrectCount(session)} {t('game.correct.lower')}</span>
                     <span>{getWrongCount(session)} {t('game.wrong.lower')}</span>
+                    <button type="button" className={styles.secondaryButton} onClick={handleQuitGame}>
+                      {t('game.quitGame')}
+                    </button>
                   </div>
                 </div>
 
@@ -693,7 +713,7 @@ export function MillionaireApp() {
                   <span>{t('results.student')}: {session.participant.studentName}</span>
                   <span>{t('results.mode')}: {t(`mode.${session.mode}`)}</span>
                   <span>{t('results.started')}: {formatDateTime(session.startedAt)}</span>
-                  <span>{t('results.finished')}: {formatDateTime(session.completedAt)}</span>
+                  <span>{t('results.finished')}: {formatDateTime(session.completedAt || new Date().toISOString())}</span>
                 </div>
 
                 <div className={styles.summaryColumns}>

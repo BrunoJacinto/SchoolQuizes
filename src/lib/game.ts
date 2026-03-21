@@ -384,7 +384,10 @@ export function getMissedQuestions(session: RunSession): MissedQuestionSummary[]
 }
 
 export function buildResultsPayload(session: RunSession): ResultsPayload {
-  assert(session.answers.length === session.questions.length, "A sessão ainda não terminou.");
+  // In cutthroat mode, session can complete before all questions are answered (after 3 wrong answers)
+  if (session.mode !== "cutthroat") {
+    assert(session.answers.length === session.questions.length, "A sessão ainda não terminou.");
+  }
   assert(session.completedAt, "Falta a data de conclusão.");
 
   return {

@@ -88,6 +88,8 @@ const translations = {
     'game.loading': 'A preparar o palco matemático...',
     'game.points': 'pontos',
     'game.pts': 'pts',
+    'game.quitGame': 'Sair do jogo',
+    'game.quittingGame': 'A sair do jogo e a enviar resultados...',
 
     'cutthroat.errorLabel': 'Erros',
     'cutthroat.errors': 'Erros: {count}/3',
@@ -194,6 +196,8 @@ const translations = {
     'game.loading': 'Preparing the math stage...',
     'game.points': 'points',
     'game.pts': 'pts',
+    'game.quitGame': 'Quit game',
+    'game.quittingGame': 'Quitting game and sending results...',
 
     'cutthroat.errorLabel': 'Errors',
     'cutthroat.errors': 'Errors: {count}/3',
