@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useEffect, useEffectEvent, useRef, useState } from "react";
+import { useLanguage } from "@/contexts/language-context";
 
 import {
   advanceSession,
@@ -79,6 +80,7 @@ function getOptionState(session: RunSession, optionIndex: number): "idle" | "sel
 }
 
 export function MillionaireApp() {
+  const { language, setLanguage, t } = useLanguage();
   const [session, setSession] = useState<RunSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [invalidReason, setInvalidReason] = useState<string | null>(null);
@@ -143,7 +145,7 @@ export function MillionaireApp() {
     }
 
     window.history.pushState({ locked: true }, "", window.location.href);
-    setToast("Durante uma run não podes voltar para perguntas anteriores.");
+    setToast(t("nav.backWarning"));
   });
 
   const handleBeforeUnload = useEffectEvent((event: BeforeUnloadEvent) => {
@@ -170,13 +172,13 @@ export function MillionaireApp() {
       const payload = (await response.json()) as { ok?: boolean; message?: string };
 
       if (!response.ok || !payload.ok) {
-        throw new Error(payload.message ?? "Não foi possível enviar o email.");
+        throw new Error(payload.message ?? t("email.failedToSend"));
       }
 
       setSession((current) => (current ? setEmailState(current, "sent") : current));
-      setToast("Resultado enviado por email com sucesso.");
+      setToast(t("email.sentSuccess"));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Falhou o envio do email.";
+      const message = error instanceof Error ? error.message : t("email.sendFailed");
       setSession((current) => (current ? setEmailState(current, "error", message) : current));
       setToast(message);
     }
@@ -193,7 +195,7 @@ export function MillionaireApp() {
       setStudentName(loadedSession.session.participant.studentName);
       setGuardianEmail(loadedSession.session.participant.guardianEmail);
       setSelectedMode(loadedSession.session.mode);
-      setToast("Sessão recuperada a partir do navegador.");
+      setToast(t("nav.sessionRecovered"));
     }
 
     if (loadedSession.status === "invalid") {
@@ -293,12 +295,12 @@ export function MillionaireApp() {
     const trimmedEmail = guardianEmail.trim();
 
     if (!trimmedName) {
-      setFormError("Indica o nome do aluno antes de começar.");
+      setFormError(t("form.error.nameEmpty"));
       return;
     }
 
     if (!isValidEmail(trimmedEmail)) {
-      setFormError("Indica um email válido do pai ou encarregado de educação.");
+      setFormError(t("form.error.emailInvalid2"));
       return;
     }
 
@@ -369,7 +371,7 @@ export function MillionaireApp() {
   if (loading) {
     return (
       <main className={styles.appShell}>
-        <div className={styles.loadingPanel}>A preparar o palco matemático...</div>
+        <div className={styles.loadingPanel}>{t("game.loading")}</div>
       </main>
     );
   }
@@ -382,60 +384,63 @@ export function MillionaireApp() {
 
       <header className={styles.header}>
         <div>
-          <img src="/quemquersemilionario.png" alt={APP_NAME} className={styles.logo} />
-          <p className={styles.schoolLabel}>{SCHOOL_NAME}</p>
-          <h1 className={styles.title}>{APP_NAME}</h1>
+          <img src="/quemquersemilionario.png" alt={t('app.title')} className={styles.logo} />
+          <p className={styles.schoolLabel}>{t('app.school')}</p>
+          <h1 className={styles.title}>{t('app.title')}</h1>
           <p className={styles.subtitle}>
-            Concurso de treino para Matemática do 5.º ano, com progressão em 50 perguntas e recuperação automática da
-            sessão.
+            {t('app.subtitle')}
           </p>
         </div>
 
-        <button type="button" className={styles.soundToggle} onClick={handleSoundToggle}>
-          Som: {activeSound ? "ligado" : "desligado"}
-        </button>
+        <div className={styles.headerControls}>
+          <button type="button" className={styles.languageToggle} onClick={() => setLanguage(language === 'pt' ? 'en' : 'pt')}>
+            {language === 'pt' ? 'EN' : 'PT'}
+          </button>
+          <button type="button" className={styles.soundToggle} onClick={handleSoundToggle}>
+            {t(activeSound ? 'button.sound.on' : 'button.sound.off')}
+          </button>
+        </div>
       </header>
 
       {!session ? (
         <section className={styles.heroGrid}>
           <div className={styles.heroCard}>
-            <p className={styles.kicker}>Treino escolar com ambiente de concurso</p>
-            <h2 className={styles.heroTitle}>Escolhe o modo, introduz os dados e começa a tua run.</h2>
+            <p className={styles.kicker}>{t('hero.kicker')}</p>
+            <h2 className={styles.heroTitle}>{t('hero.title')}</h2>
             <p className={styles.heroText}>
-              As 50 perguntas são sorteadas apenas no início, ficam guardadas no navegador e o resultado final é enviado
-              para o email do encarregado de educação.
+              {t('hero.text')}
             </p>
 
             <div className={styles.formGrid}>
               <label className={styles.inputBlock}>
-                <span>Nome do aluno</span>
+                <span>{t('form.studentName')}</span>
                 <input
                   value={studentName}
                   onChange={(event) => setStudentName(event.target.value)}
-                  placeholder="Ex.: Mariana Silva"
+                  placeholder={t('form.studentNamePlaceholder')}
                 />
               </label>
 
               <label className={styles.inputBlock}>
-                <span>Email do pai ou encarregado de educação</span>
+                <span>{t('form.guardianEmail')}</span>
                 <input
                   type="email"
                   value={guardianEmail}
                   onChange={(event) => setGuardianEmail(event.target.value)}
-                  placeholder="encarregado@email.pt"
+                  placeholder={t('form.guardianEmailPlaceholder')}
                 />
               </label>
             </div>
 
-            <p className={styles.formHint}>O email é obrigatório, porque o resumo final será enviado para esse endereço.</p>
+            <p className={styles.formHint}>{t('app.formHint')}</p>
 
             {formError ? <p className={styles.errorText}>{formError}</p> : null}
             {invalidReason ? (
               <div className={styles.warningCard}>
-                <strong>Sessão local inconsistente</strong>
+                <strong>{t('form.sessionInvalid')}</strong>
                 <p>{invalidReason}</p>
                 <button type="button" className={styles.secondaryButton} onClick={handleRestart}>
-                  Limpar sessão local
+                  {t('form.clearSession')}
                 </button>
               </div>
             ) : null}
@@ -456,18 +461,18 @@ export function MillionaireApp() {
 
             <div className={styles.actionRow}>
               <button type="button" className={styles.primaryButton} onClick={handleStartRun}>
-                Começar run de 50 perguntas
+                {t('hero.startButton')}
               </button>
             </div>
           </div>
 
           <aside className={styles.sideCard}>
-            <h3>Como funciona</h3>
+            <h3>{t('sidebar.title')}</h3>
             <ul className={styles.infoList}>
-              <li>50 perguntas por run: 20 fáceis, 15 médias e 15 difíceis.</li>
-              <li>Sem repetição dentro da mesma run e sem voltar atrás durante o jogo.</li>
-              <li>Progresso guardado em `localStorage` para recuperar após refresh ou fecho.</li>
-              <li>Resumo final com pontos, erros por tópico e perguntas falhadas.</li>
+              <li>{t('sidebar.item1')}</li>
+              <li>{t('sidebar.item2')}</li>
+              <li>{t('sidebar.item3')}</li>
+              <li>{t('sidebar.item4')}</li>
             </ul>
           </aside>
         </section>
@@ -478,10 +483,10 @@ export function MillionaireApp() {
           <aside className={styles.ladderCard}>
             <div className={styles.ladderHeader}>
               <div>
-                <p className={styles.smallLabel}>Patamares</p>
-                <h3>Escada do concurso</h3>
+                <p className={styles.smallLabel}>{t('game.milestones')}</p>
+                <h3>{t('game.ladder')}</h3>
               </div>
-              <p className={styles.scorePill}>{formatScore(session.score)} pontos</p>
+              <p className={styles.scorePill}>{formatScore(session.score)} {t('game.points')}</p>
             </div>
 
             <div className={styles.ladderList}>
@@ -511,14 +516,14 @@ export function MillionaireApp() {
               <>
                 <div className={styles.statusRow}>
                   <div>
-                    <p className={styles.smallLabel}>{MODE_LABELS[session.mode]}</p>
+                    <p className={styles.smallLabel}>{t(`mode.${session.mode}`)}</p>
                     <h2 className={styles.questionCounter}>
-                      Pergunta {session.currentIndex + 1} de {TOTAL_QUESTIONS}
+                      {t('game.questionCounter')} {session.currentIndex + 1} {t('game.of')} {TOTAL_QUESTIONS}
                     </h2>
                   </div>
                   <div className={styles.statsRow}>
-                    <span>{getCorrectCount(session)} certas</span>
-                    <span>{getWrongCount(session)} erradas</span>
+                    <span>{getCorrectCount(session)} {t('game.correct.lower')}</span>
+                    <span>{getWrongCount(session)} {t('game.wrong.lower')}</span>
                   </div>
                 </div>
 
@@ -538,7 +543,7 @@ export function MillionaireApp() {
                     {session.mode === "cutthroat" && (
                       <div className={styles.cutthroatInfo}>
                         <div className={styles.errorCounter}>
-                          Erros: {session.wrongAnswersCount ?? 0}/3
+                          {t('cutthroat.errorLabel')}: {session.wrongAnswersCount ?? 0}/3
                         </div>
                         <button
                           type="button"
@@ -554,7 +559,7 @@ export function MillionaireApp() {
                             selectedOption !== null
                           }
                         >
-                          {session.lifelineState?.fiftyFiftyUsed ? "50/50 usada" : "Usar 50/50"}
+                          {session.lifelineState?.fiftyFiftyUsed ? t('button.used50') : t('button.use50')}
                         </button>
                       </div>
                     )}
@@ -589,19 +594,19 @@ export function MillionaireApp() {
                     {session.phase === "feedback" && currentAnswer ? (
                       <div className={styles.feedbackPanel}>
                         <p className={currentAnswer.isCorrect ? styles.successText : styles.errorText}>
-                          {currentAnswer.isCorrect ? "Resposta correta." : "Resposta incorreta."}
+                          {currentAnswer.isCorrect ? t('feedback.correctAnswer') : t('feedback.wrongAnswer')}
                         </p>
 
                         {session.mode !== "exame" ? (
                           <p className={styles.explanationText}>{currentQuestion.explanation}</p>
                         ) : (
                           <p className={styles.explanationText}>
-                            Resposta registada. No modo exame as explicações aparecem apenas no resumo final.
+                            {t('feedback.examMode')}
                           </p>
                         )}
 
                         <button type="button" className={styles.primaryButton} onClick={handleAdvance}>
-                          Pergunta seguinte
+                          {t('nextButton')}
                         </button>
                       </div>
                     ) : (
@@ -611,7 +616,7 @@ export function MillionaireApp() {
                         onClick={handleSubmitAnswer}
                         disabled={selectedOption === null}
                       >
-                        Confirmar resposta
+                        {t('confirmButton')}
                       </button>
                     )}
                   </article>
@@ -621,61 +626,61 @@ export function MillionaireApp() {
               <section className={styles.summaryPanel}>
                 <div className={styles.summaryHeader}>
                   <div>
-                    <p className={styles.smallLabel}>Run concluída</p>
-                    <h2>Resumo final do aluno</h2>
+                    <p className={styles.smallLabel}>{t('results.runCompleted')}</p>
+                    <h2>{t('results.studentSummary')}</h2>
                   </div>
                   <button type="button" className={styles.secondaryButton} onClick={handleRestart}>
-                    Novo jogo
+                    {t('results.newGame')}
                   </button>
                 </div>
 
                 <div className={styles.summaryGrid}>
                   <div className={styles.summaryStat}>
-                    <span>Pontuação</span>
+                    <span>{t('results.score')}</span>
                     <strong>{formatScore(session.score)}</strong>
                   </div>
                   <div className={styles.summaryStat}>
-                    <span>Respostas certas</span>
+                    <span>{t('results.correctAnswers')}</span>
                     <strong>{getCorrectCount(session)}</strong>
                   </div>
                   <div className={styles.summaryStat}>
-                    <span>Respostas erradas</span>
+                    <span>{t('results.wrongAnswers')}</span>
                     <strong>{getWrongCount(session)}</strong>
                   </div>
                   <div className={styles.summaryStat}>
-                    <span>Tempo total</span>
+                    <span>{t('results.totalTime')}</span>
                     <strong>{formatElapsedTime(getTotalTimeSeconds(session))}</strong>
                   </div>
                 </div>
 
                 <div className={styles.emailCard}>
                   <div>
-                    <p className={styles.smallLabel}>Envio de resultados</p>
+                    <p className={styles.smallLabel}>{t('results.emailSection')}</p>
                     <h3>{session.participant.guardianEmail}</h3>
                     <p className={styles.emailStatus}>
-                      {session.emailStatus === "sending" && "A enviar email final..."}
-                      {session.emailStatus === "sent" && "Email enviado com sucesso."}
+                      {session.emailStatus === "sending" && t('email.sending')}
+                      {session.emailStatus === "sent" && t('email.sent')}
                       {session.emailStatus === "error" && session.emailError}
                     </p>
                   </div>
 
                   {session.emailStatus === "error" ? (
                     <button type="button" className={styles.secondaryButton} onClick={handleRetryEmail}>
-                      Tentar novamente
+                      {t('results.retryEmail')}
                     </button>
                   ) : null}
                 </div>
 
                 <div className={styles.summaryMeta}>
-                  <span>Aluno: {session.participant.studentName}</span>
-                  <span>Modo: {MODE_LABELS[session.mode]}</span>
-                  <span>Início: {formatDateTime(session.startedAt)}</span>
-                  <span>Fim: {formatDateTime(session.completedAt)}</span>
+                  <span>{t('results.student')}: {session.participant.studentName}</span>
+                  <span>{t('results.mode')}: {t(`mode.${session.mode}`)}</span>
+                  <span>{t('results.started')}: {formatDateTime(session.startedAt)}</span>
+                  <span>{t('results.finished')}: {formatDateTime(session.completedAt)}</span>
                 </div>
 
                 <div className={styles.summaryColumns}>
                   <div className={styles.summaryBlock}>
-                    <h3>Tópicos com mais erros</h3>
+                    <h3>{t('results.topicsMistakes')}</h3>
                     <ul className={styles.infoList}>
                       {getTopMistakeTopics(session).length > 0 ? (
                         getTopMistakeTopics(session).map((item) => (
@@ -684,25 +689,25 @@ export function MillionaireApp() {
                           </li>
                         ))
                       ) : (
-                        <li>Sem erros. Excelente run.</li>
+                        <li>{t('results.noErrors')}</li>
                       )}
                     </ul>
                   </div>
 
                   <div className={styles.summaryBlock}>
-                    <h3>Perguntas falhadas</h3>
+                    <h3>{t('results.missedQuestions')}</h3>
                     <div className={styles.missedList}>
                       {buildResultsPayload(session).missedQuestions.length > 0 ? (
                         buildResultsPayload(session).missedQuestions.map((item) => (
                           <article key={item.id} className={styles.missedCard}>
                             <strong>{item.prompt}</strong>
-                            <p>Respondido: {item.selectedAnswer}</p>
-                            <p>Correto: {item.correctAnswer}</p>
+                            <p>{t('results.yourAnswer')}: {item.selectedAnswer}</p>
+                            <p>{t('results.correctAnswer')}: {item.correctAnswer}</p>
                             <p>{item.explanation}</p>
                           </article>
                         ))
                       ) : (
-                        <p>Nenhuma pergunta falhada nesta run.</p>
+                        <p>{t('results.noMissed')}</p>
                       )}
                     </div>
                   </div>
@@ -717,7 +722,7 @@ export function MillionaireApp() {
 
       <footer className={styles.footer}>
         <p>
-          Desenvolvido para a família por{" "}
+          {t('footer.credit')}{" "}
           <a href="https://www.linkedin.com/in/brunojacinto/" target="_blank" rel="noopener noreferrer">
             Bruno Jacinto
           </a>

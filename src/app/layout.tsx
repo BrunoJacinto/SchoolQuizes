@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Sora } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { LanguageProvider } from "@/contexts/language-context";
 
 import "./globals.css";
 
@@ -25,8 +26,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="pt-PT" className={`${displayFont.variable} ${bodyFont.variable}`}>
       <body>
-        {children}
-        <Analytics />
+        <LanguageProvider>
+          {children}
+          <Analytics />
+        </LanguageProvider>
       </body>
     </html>
   );
