@@ -20,6 +20,7 @@ import {
   getAnsweredCount,
   getTotalTimeSeconds,
   getTopMistakeTopics,
+  useFiftyFiftyLifeline,
 } from '@/lib/game';
 
 describe('Game Utilities', () => {
@@ -294,6 +295,87 @@ describe('Game Utilities', () => {
       const mistakes = getTopMistakeTopics(session);
       expect(mistakes).toBeDefined();
       expect(Array.isArray(mistakes)).toBe(true);
+    });
+  });
+
+  describe('Cutthroat Mode', () => {
+    it('should initialize cutthroat session with 0 wrong answers', () => {
+      const session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+
+      expect(session.wrongAnswersCount).toBe(0);
+      expect(session.lifelineState?.fiftyFiftyUsed).toBe(false);
+    });
+
+    it('should increment wrong answer count on incorrect answer', () => {
+      let session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+      const question = getCurrentQuestion(session);
+      const incorrectIndex = question!.correctIndex === 0 ? 1 : 0;
+
+      session = submitAnswer(session, incorrectIndex);
+
+      expect(session.wrongAnswersCount).toBe(1);
+    });
+
+    it('should not increment wrong count on correct answer', () => {
+      let session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+      const question = getCurrentQuestion(session);
+
+      session = submitAnswer(session, question!.correctIndex);
+
+      expect(session.wrongAnswersCount).toBe(0);
+    });
+
+    it('should end session after 3 wrong answers', () => {
+      let session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+
+      // First wrong answer
+      let question = getCurrentQuestion(session);
+      let incorrectIndex = question!.correctIndex === 0 ? 1 : 0;
+      session = submitAnswer(session, incorrectIndex);
+      expect(session.status).toBe('active');
+      expect(session.wrongAnswersCount).toBe(1);
+      session = advanceSession(session);
+
+      // Second wrong answer
+      question = getCurrentQuestion(session);
+      incorrectIndex = question!.correctIndex === 0 ? 1 : 0;
+      session = submitAnswer(session, incorrectIndex);
+      expect(session.status).toBe('active');
+      expect(session.wrongAnswersCount).toBe(2);
+      session = advanceSession(session);
+
+      // Third wrong answer - should end the session
+      question = getCurrentQuestion(session);
+      incorrectIndex = question!.correctIndex === 0 ? 1 : 0;
+      session = submitAnswer(session, incorrectIndex);
+      expect(session.status).toBe('completed');
+      expect(session.wrongAnswersCount).toBe(3);
+    });
+
+    it('should use 50/50 lifeline correctly', () => {
+      const session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+      const updatedSession = useFiftyFiftyLifeline(session);
+
+      expect(updatedSession.lifelineState?.fiftyFiftyUsed).toBe(true);
+      expect(updatedSession.cutthroatHiddenOptions).toHaveLength(2);
+    });
+
+    it('should not reuse 50/50 lifeline', () => {
+      let session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+
+      session = useFiftyFiftyLifeline(session);
+      const secondAttempt = useFiftyFiftyLifeline(session);
+
+      expect(secondAttempt.cutthroatHiddenOptions).toEqual(session.cutthroatHiddenOptions);
+    });
+
+    it('should keep correct answer visible when using 50/50', () => {
+      const session = createRunSession({ studentName: 'Test', guardianEmail: 'test@email.pt' }, 'cutthroat', true);
+      const question = getCurrentQuestion(session);
+      const updatedSession = useFiftyFiftyLifeline(session);
+
+      expect(updatedSession.cutthroatHiddenOptions).toBeDefined();
+      expect(updatedSession.cutthroatHiddenOptions).not.toContain(question!.correctIndex);
     });
   });
 });

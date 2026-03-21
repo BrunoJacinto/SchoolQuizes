@@ -12,11 +12,15 @@ export const TOPICS = [
 ] as const;
 
 export const DIFFICULTIES = ["facil", "medio", "dificil"] as const;
-export const GAME_MODES = ["jogo", "exame", "treino"] as const;
+export const GAME_MODES = ["jogo", "exame", "treino", "cutthroat"] as const;
 
 export type Topic = (typeof TOPICS)[number];
 export type Difficulty = (typeof DIFFICULTIES)[number];
 export type GameMode = (typeof GAME_MODES)[number];
+
+export type LifelineState = {
+  fiftyFiftyUsed: boolean;
+};
 
 export type Question = {
   id: string;
@@ -63,6 +67,9 @@ export type RunSession = {
   emailStatus: EmailStatus;
   emailError?: string;
   soundEnabled: boolean;
+  wrongAnswersCount?: number;
+  lifelineState?: LifelineState;
+  cutthroatHiddenOptions?: number[];
 };
 
 export type TopicMistake = {

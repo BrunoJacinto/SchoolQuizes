@@ -23,6 +23,7 @@ import {
   setRunSound,
   submitAnswer,
   TOTAL_QUESTIONS,
+  useFiftyFiftyLifeline,
 } from "@/lib/game";
 import {
   clearRunSession,
@@ -440,7 +441,7 @@ export function MillionaireApp() {
             ) : null}
 
             <div className={styles.modeGrid}>
-              {(["jogo", "exame", "treino"] as const).map((mode) => (
+              {(["jogo", "exame", "treino", "cutthroat"] as const).map((mode) => (
                 <button
                   key={mode}
                   type="button"
@@ -534,8 +535,35 @@ export function MillionaireApp() {
                     </div>
                     <h3 className={styles.questionText}>{currentQuestion.prompt}</h3>
 
+                    {session.mode === "cutthroat" && (
+                      <div className={styles.cutthroatInfo}>
+                        <div className={styles.errorCounter}>
+                          Erros: {session.wrongAnswersCount ?? 0}/3
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.lifelineButton}
+                          onClick={() => {
+                            startTransition(() => {
+                              setSession(useFiftyFiftyLifeline(session));
+                            });
+                          }}
+                          disabled={
+                            session.phase !== "question" ||
+                            session.lifelineState?.fiftyFiftyUsed ||
+                            selectedOption !== null
+                          }
+                        >
+                          {session.lifelineState?.fiftyFiftyUsed ? "50/50 usada" : "Usar 50/50"}
+                        </button>
+                      </div>
+                    )}
+
                     <div className={styles.optionsGrid}>
                       {currentQuestion.options.map((option, index) => {
+                        const isHidden = session.cutthroatHiddenOptions?.includes(index) ?? false;
+                        if (isHidden) return null;
+
                         const state =
                           session.phase === "question"
                             ? selectedOption === index

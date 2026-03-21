@@ -27,12 +27,14 @@ export const MODE_LABELS: Record<GameMode, string> = {
   jogo: "Modo Jogo",
   exame: "Modo Exame",
   treino: "Modo Treino",
+  cutthroat: "Modo Cutthroat",
 };
 
 export const MODE_DESCRIPTIONS: Record<GameMode, string> = {
   jogo: "Progressão tipo concurso, com feedback visual e patamares de pontuação.",
   exame: "Sem explicações entre perguntas. No fim recebes apenas o resumo completo.",
   treino: "Feedback imediato e explicação pedagógica após cada resposta.",
+  cutthroat: "Até 3 erros e sais do jogo. Tens 1 ajuda de 50/50 para gastar.",
 };
 
 export const PRIZE_LADDER = [
@@ -185,6 +187,9 @@ export function createRunSession(
     emailStatus: "idle",
     emailError: undefined,
     soundEnabled,
+    wrongAnswersCount: mode === "cutthroat" ? 0 : undefined,
+    lifelineState: mode === "cutthroat" ? { fiftyFiftyUsed: false } : undefined,
+    cutthroatHiddenOptions: mode === "cutthroat" ? [] : undefined,
   });
 }
 
@@ -229,13 +234,20 @@ export function submitAnswer(session: RunSession, selectedIndex: number, now = n
   const answers = [...session.answers, answerRecord];
   const isLastQuestion = session.currentIndex === session.questions.length - 1;
 
+  // Cutthroat mode: track wrong answers
+  const newWrongCount = session.wrongAnswersCount ?? 0;
+  const isCutthroatLost = session.mode === "cutthroat" && !isCorrect && newWrongCount + 1 >= 3;
+  const shouldComplete = isLastQuestion || isCutthroatLost;
+
   return signSession({
     ...session,
     answers,
     score: session.score + pointsAwarded,
-    completedAt: isLastQuestion ? answeredAt : undefined,
-    status: isLastQuestion ? "completed" : "active",
-    phase: isLastQuestion ? "feedback" : "feedback",
+    completedAt: shouldComplete ? answeredAt : undefined,
+    status: shouldComplete ? "completed" : "active",
+    phase: "feedback",
+    wrongAnswersCount: session.mode === "cutthroat" ? newWrongCount + (isCorrect ? 0 : 1) : undefined,
+    cutthroatHiddenOptions: session.mode === "cutthroat" ? [] : undefined,
   });
 }
 
@@ -268,6 +280,30 @@ export function setEmailState(
     ...session,
     emailStatus,
     emailError,
+  });
+}
+
+export function useFiftyFiftyLifeline(session: RunSession): RunSession {
+  if (session.mode !== "cutthroat" || !session.lifelineState) {
+    return session;
+  }
+
+  if (session.lifelineState.fiftyFiftyUsed) {
+    return session;
+  }
+
+  const currentQuestion = getCurrentQuestion(session);
+  if (!currentQuestion) {
+    return session;
+  }
+
+  const wrongIndices = [0, 1, 2, 3].filter((i) => i !== currentQuestion.correctIndex);
+  const hiddenIndices = wrongIndices.slice(0, 2);
+
+  return signSession({
+    ...session,
+    lifelineState: { fiftyFiftyUsed: true },
+    cutthroatHiddenOptions: hiddenIndices,
   });
 }
 
