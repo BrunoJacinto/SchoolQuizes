@@ -66,6 +66,13 @@
   text-transform: uppercase;
 }
 
+.logo {
+  width: auto;
+  height: 120px;
+  margin-bottom: 16px;
+  object-fit: contain;
+}
+
 .title {
   margin: 8px 0 10px;
   font-size: clamp(2rem, 5vw, 3.9rem);

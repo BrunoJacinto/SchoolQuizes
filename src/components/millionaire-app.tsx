@@ -354,6 +354,7 @@ export function MillionaireApp() {
 
       <header className={styles.header}>
         <div>
+          <img src="/quemquersemilionario.png" alt={APP_NAME} className={styles.logo} />
           <p className={styles.schoolLabel}>{SCHOOL_NAME}</p>
           <h1 className={styles.title}>{APP_NAME}</h1>
           <p className={styles.subtitle}>
