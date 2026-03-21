@@ -384,10 +384,10 @@ export function getMissedQuestions(session: RunSession): MissedQuestionSummary[]
 }
 
 export function buildResultsPayload(session: RunSession): ResultsPayload {
-  // In cutthroat mode, session can complete before all questions are answered (after 3 wrong answers)
-  if (session.mode !== "cutthroat") {
-    assert(session.answers.length === session.questions.length, "A sessão ainda não terminou.");
-  }
+  // Session can complete before all questions are answered in two cases:
+  // 1. Cutthroat mode: after 3 wrong answers
+  // 2. User quits early: when clicking "Quit Game" button
+  assert(session.status === "completed", "A sessão ainda não terminou.");
   assert(session.completedAt, "Falta a data de conclusão.");
 
   return {
