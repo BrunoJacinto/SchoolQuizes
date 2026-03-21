@@ -598,30 +598,6 @@ export function MillionaireApp() {
                     </div>
                     <h3 className={styles.questionText}>{localizedQuestion.prompt}</h3>
 
-                    {session.mode === "cutthroat" && (
-                      <div className={styles.cutthroatInfo}>
-                        <div className={styles.errorCounter}>
-                          {t('cutthroat.errorLabel')}: {session.wrongAnswersCount ?? 0}/3
-                        </div>
-                        <button
-                          type="button"
-                          className={styles.lifelineButton}
-                          onClick={() => {
-                            startTransition(() => {
-                              setSession(useFiftyFiftyLifeline(session));
-                            });
-                          }}
-                          disabled={
-                            session.phase !== "question" ||
-                            session.lifelineState?.fiftyFiftyUsed ||
-                            selectedOption !== null
-                          }
-                        >
-                          {session.lifelineState?.fiftyFiftyUsed ? t('button.used50') : t('button.use50')}
-                        </button>
-                      </div>
-                    )}
-
                     <div className={styles.optionsGrid}>
                       {localizedQuestion.options.map((option, index) => {
                         const isHidden = session.cutthroatHiddenOptions?.includes(index) ?? false;
@@ -676,6 +652,30 @@ export function MillionaireApp() {
                       >
                         {t('confirmButton')}
                       </button>
+                    )}
+
+                    {session.mode === "cutthroat" && (
+                      <div className={styles.cutthroatInfo}>
+                        <div className={styles.errorCounter}>
+                          {t('cutthroat.errorLabel')}: {session.wrongAnswersCount ?? 0}/3
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.lifelineButton}
+                          onClick={() => {
+                            startTransition(() => {
+                              setSession(useFiftyFiftyLifeline(session));
+                            });
+                          }}
+                          disabled={
+                            session.phase !== "question" ||
+                            session.lifelineState?.fiftyFiftyUsed ||
+                            selectedOption !== null
+                          }
+                        >
+                          {session.lifelineState?.fiftyFiftyUsed ? t('button.used50') : t('button.use50')}
+                        </button>
+                      </div>
                     )}
                   </article>
                 ) : null}
