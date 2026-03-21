@@ -264,7 +264,7 @@ export function MillionaireApp() {
   }, [session]);
 
   useEffect(() => {
-    if (session?.phase !== "question") {
+    if (!session || session.status !== "active") {
       return;
     }
 
@@ -277,9 +277,27 @@ export function MillionaireApp() {
         D: 3,
       };
 
-      if (key in optionMap) {
-        event.preventDefault();
-        setSelectedOption(optionMap[key]);
+      if (!(key in optionMap)) {
+        return;
+      }
+
+      event.preventDefault();
+      const selectedIndex = optionMap[key];
+
+      if (session.phase === "question") {
+        // Submit the answer with the selected option
+        const updatedSession = submitAnswer(session, selectedIndex);
+        const latestAnswer = updatedSession.answers[updatedSession.answers.length - 1];
+        playFeedbackSound(latestAnswer?.isCorrect ? "correct" : "wrong");
+        startTransition(() => {
+          setSession(updatedSession);
+        });
+      } else if (session.phase === "feedback") {
+        // Advance to next question
+        playFeedbackSound("advance");
+        startTransition(() => {
+          setSession(advanceSession(session));
+        });
       }
     };
 
@@ -288,7 +306,7 @@ export function MillionaireApp() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [session?.phase]);
+  }, [session]);
 
   function handleStartRun() {
     const trimmedName = studentName.trim();
