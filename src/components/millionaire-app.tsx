@@ -34,13 +34,29 @@ import {
   saveRunSession,
   saveSoundPreference,
 } from "@/lib/storage";
-import type { GameMode, RunSession } from "@/types/game";
+import type { GameMode, Question, RunSession } from "@/types/game";
 
 import styles from "./millionaire-app.module.css";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Quem Quer Ser Milionário? 5.º Ano";
 const SCHOOL_NAME = process.env.NEXT_PUBLIC_SCHOOL_NAME ?? "Escola Conde de Oeiras";
 const DEFAULT_SOUND_ENABLED = process.env.NEXT_PUBLIC_ENABLE_SOUND !== "false";
+
+// Helper to get localized question text based on language
+function getLocalizedQuestion(question: Question | null, language: string): Question | null {
+  if (!question) return null;
+
+  if (language === "en" && question.promptEN) {
+    return {
+      ...question,
+      prompt: question.promptEN,
+      options: question.optionsEN || question.options,
+      explanation: question.explanationEN || question.explanation,
+    };
+  }
+
+  return question;
+}
 
 function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -95,6 +111,7 @@ export function MillionaireApp() {
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const currentQuestion = session ? getCurrentQuestion(session) : null;
+  const localizedQuestion = getLocalizedQuestion(currentQuestion, language);
   const currentAnswer = session ? getCurrentAnswer(session) : null;
   const answeredCount = session ? getAnsweredCount(session) : 0;
   const progressPercent = session ? (answeredCount / TOTAL_QUESTIONS) * 100 : 0;
@@ -572,14 +589,14 @@ export function MillionaireApp() {
                   <div className={styles.progressFill} style={{ width: `${progressPercent}%` }} />
                 </div>
 
-                {currentQuestion ? (
+                {localizedQuestion ? (
                   <article className={styles.questionPanel}>
                     <div className={styles.topicBadge}>
-                      <span>{currentQuestion.topic}</span>
-                      <span>{currentQuestion.difficulty}</span>
+                      <span>{localizedQuestion.topic}</span>
+                      <span>{localizedQuestion.difficulty}</span>
                       <span>{formatScore(getQuestionPoints(session.currentIndex))} pts</span>
                     </div>
-                    <h3 className={styles.questionText}>{currentQuestion.prompt}</h3>
+                    <h3 className={styles.questionText}>{localizedQuestion.prompt}</h3>
 
                     {session.mode === "cutthroat" && (
                       <div className={styles.cutthroatInfo}>
@@ -606,7 +623,7 @@ export function MillionaireApp() {
                     )}
 
                     <div className={styles.optionsGrid}>
-                      {currentQuestion.options.map((option, index) => {
+                      {localizedQuestion.options.map((option, index) => {
                         const isHidden = session.cutthroatHiddenOptions?.includes(index) ?? false;
                         if (isHidden) return null;
 
@@ -619,7 +636,7 @@ export function MillionaireApp() {
 
                         return (
                           <button
-                            key={`${currentQuestion.id}-${option}`}
+                            key={`${localizedQuestion.id}-${option}`}
                             type="button"
                             className={`${styles.optionCard} ${styles[`option${state[0].toUpperCase()}${state.slice(1)}`]}`}
                             onClick={() => (session.phase === "question" ? setSelectedOption(index) : undefined)}
@@ -639,7 +656,7 @@ export function MillionaireApp() {
                         </p>
 
                         {session.mode !== "exame" ? (
-                          <p className={styles.explanationText}>{currentQuestion.explanation}</p>
+                          <p className={styles.explanationText}>{localizedQuestion.explanation}</p>
                         ) : (
                           <p className={styles.explanationText}>
                             {t('feedback.examMode')}

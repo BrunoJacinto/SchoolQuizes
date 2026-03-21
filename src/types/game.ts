@@ -27,9 +27,12 @@ export type Question = {
   topic: Topic;
   difficulty: Difficulty;
   prompt: string;
+  promptEN?: string;
   options: [string, string, string, string];
+  optionsEN?: [string, string, string, string];
   correctIndex: number;
   explanation: string;
+  explanationEN?: string;
 };
 
 export type Participant = {
