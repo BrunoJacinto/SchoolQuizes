@@ -116,8 +116,8 @@ function groupByTopic(questions: Question[]): Map<Topic, Question[]> {
   return buckets;
 }
 
-function pickQuestionsByDifficulty(difficulty: Difficulty, count: number): Question[] {
-  const pool = QUESTION_BANK.filter((question) => question.difficulty === difficulty);
+function pickQuestionsByDifficulty(difficulty: Difficulty, count: number, bank: Question[] = QUESTION_BANK): Question[] {
+  const pool = bank.filter((question) => question.difficulty === difficulty);
   const grouped = groupByTopic(shuffle(pool));
   const topics = shuffle([...grouped.keys()]);
   const selection: Question[] = [];
@@ -147,11 +147,11 @@ function pickQuestionsByDifficulty(difficulty: Difficulty, count: number): Quest
   return selection;
 }
 
-export function selectRunQuestions(): Question[] {
+export function selectRunQuestions(bank: Question[] = QUESTION_BANK): Question[] {
   const selected = [
-    ...pickQuestionsByDifficulty("facil", QUESTION_DISTRIBUTION.facil),
-    ...pickQuestionsByDifficulty("medio", QUESTION_DISTRIBUTION.medio),
-    ...pickQuestionsByDifficulty("dificil", QUESTION_DISTRIBUTION.dificil),
+    ...pickQuestionsByDifficulty("facil", QUESTION_DISTRIBUTION.facil, bank),
+    ...pickQuestionsByDifficulty("medio", QUESTION_DISTRIBUTION.medio, bank),
+    ...pickQuestionsByDifficulty("dificil", QUESTION_DISTRIBUTION.dificil, bank),
   ];
 
   assert(selected.length === TOTAL_QUESTIONS, "A run tem de ter exatamente 50 perguntas.");
@@ -167,6 +167,7 @@ export function createRunSession(
   participant: Participant,
   mode: GameMode,
   soundEnabled: boolean,
+  questionBank?: Question[],
   now = new Date(),
 ): RunSession {
   const isoDate = now.toISOString();
@@ -175,7 +176,7 @@ export function createRunSession(
     version: SESSION_VERSION,
     participant,
     mode,
-    questions: selectRunQuestions(),
+    questions: selectRunQuestions(questionBank),
     currentIndex: 0,
     currentQuestionStartedAt: isoDate,
     answers: [],

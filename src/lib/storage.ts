@@ -10,20 +10,20 @@ function isBrowser(): boolean {
   return typeof window !== "undefined";
 }
 
-export function saveRunSession(session: RunSession): void {
+export function saveRunSession(session: RunSession, key = STORAGE_KEY): void {
   if (!isBrowser()) {
     return;
   }
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  window.localStorage.setItem(key, JSON.stringify(session));
 }
 
-export function loadRunSession(): LoadSessionResult {
+export function loadRunSession(key = STORAGE_KEY): LoadSessionResult {
   if (!isBrowser()) {
     return { status: "empty" };
   }
 
-  const rawValue = window.localStorage.getItem(STORAGE_KEY);
+  const rawValue = window.localStorage.getItem(key);
 
   if (!rawValue) {
     return { status: "empty" };
@@ -43,12 +43,12 @@ export function loadRunSession(): LoadSessionResult {
   }
 }
 
-export function clearRunSession(): void {
+export function clearRunSession(key = STORAGE_KEY): void {
   if (!isBrowser()) {
     return;
   }
 
-  window.localStorage.removeItem(STORAGE_KEY);
+  window.localStorage.removeItem(key);
 }
 
 export function saveSoundPreference(enabled: boolean): void {

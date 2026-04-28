@@ -1,0 +1,60 @@
+.chart {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  margin: 0.5rem auto 0.25rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 4px;
+}
+
+.gridLine {
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: rgba(255, 255, 255, 0.25);
+  stroke-width: 1.5;
+}
+
+.bar {
+  transition: opacity 0.15s;
+}
+
+.bar:hover {
+  opacity: 0.8;
+}
+
+.valueLabel {
+  fill: rgba(232, 237, 255, 0.9);
+  font-size: 10px;
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+}
+
+.axisLabel {
+  fill: rgba(232, 237, 255, 0.5);
+  font-size: 10px;
+  font-family: var(--font-mono, monospace);
+}
+
+.xLabel {
+  fill: rgba(232, 237, 255, 0.75);
+  font-size: 11px;
+  font-family: sans-serif;
+}
+
+.chartTitle {
+  fill: rgba(232, 237, 255, 0.5);
+  font-size: 11px;
+  font-family: sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.legendLabel {
+  fill: rgba(232, 237, 255, 0.7);
+  font-size: 11px;
+  font-family: sans-serif;
+}

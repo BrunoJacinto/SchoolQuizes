@@ -36,6 +36,7 @@ import {
 } from "@/lib/storage";
 import type { GameMode, Question, RunSession } from "@/types/game";
 
+import { ChartRenderer } from "./chart-renderer";
 import styles from "./millionaire-app.module.css";
 
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Quem Quer Ser Milionário? 5.º Ano";
@@ -96,7 +97,13 @@ function getOptionState(session: RunSession, optionIndex: number): "idle" | "sel
   return "selected";
 }
 
-export function MillionaireApp() {
+type MillionaireAppProps = {
+  questionBank?: Question[];
+  storageKey?: string;
+  testTitle?: string;
+};
+
+export function MillionaireApp({ questionBank, storageKey, testTitle }: MillionaireAppProps = {}) {
   const { language, setLanguage, t } = useLanguage();
   const [session, setSession] = useState<RunSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -204,7 +211,7 @@ export function MillionaireApp() {
 
   useEffect(() => {
     const persistedSound = loadSoundPreference(DEFAULT_SOUND_ENABLED);
-    const loadedSession = loadRunSession();
+    const loadedSession = loadRunSession(storageKey);
 
     setSoundEnabled(persistedSound);
 
@@ -241,7 +248,7 @@ export function MillionaireApp() {
       return;
     }
 
-    saveRunSession(session);
+    saveRunSession(session, storageKey);
   }, [session]);
 
   useEffect(() => {
@@ -342,10 +349,10 @@ export function MillionaireApp() {
 
     setFormError(null);
     setInvalidReason(null);
-    clearRunSession();
+    clearRunSession(storageKey);
 
     startTransition(() => {
-      setSession(createRunSession({ studentName: trimmedName, guardianEmail: trimmedEmail }, selectedMode, soundEnabled));
+      setSession(createRunSession({ studentName: trimmedName, guardianEmail: trimmedEmail }, selectedMode, soundEnabled, questionBank));
     });
   }
 
@@ -375,7 +382,7 @@ export function MillionaireApp() {
   }
 
   function handleRestart() {
-    clearRunSession();
+    clearRunSession(storageKey);
     setSession(null);
     setInvalidReason(null);
     setSelectedOption(null);
@@ -442,6 +449,7 @@ export function MillionaireApp() {
           <img src="/quemquersemilionario.png" alt={t('app.title')} className={styles.logo} />
           <p className={styles.schoolLabel}>{t('app.school')}</p>
           <h1 className={styles.title}>{t('app.title')}</h1>
+          {testTitle && <p className={styles.testBadge}>{testTitle}</p>}
           <p className={styles.subtitle}>
             {t('app.subtitle')}
           </p>
@@ -597,6 +605,10 @@ export function MillionaireApp() {
                       <span>{formatScore(getQuestionPoints(session.currentIndex))} pts</span>
                     </div>
                     <h3 className={styles.questionText}>{localizedQuestion.prompt}</h3>
+
+                    {localizedQuestion.chartData && (
+                      <ChartRenderer data={localizedQuestion.chartData} />
+                    )}
 
                     <div className={styles.optionsGrid}>
                       {localizedQuestion.options.map((option, index) => {

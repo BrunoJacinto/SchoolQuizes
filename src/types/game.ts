@@ -14,13 +14,30 @@ export const TOPICS = [
 export const DIFFICULTIES = ["facil", "medio", "dificil"] as const;
 export const GAME_MODES = ["jogo", "exame", "treino", "cutthroat"] as const;
 
-export type Topic = (typeof TOPICS)[number];
+export type Topic = string;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 export type GameMode = (typeof GAME_MODES)[number];
 
 export type LifelineState = {
   fiftyFiftyUsed: boolean;
 };
+
+export type BarChartData = {
+  type: "bar";
+  title?: string;
+  labels: string[];
+  values: number[];
+  yUnit?: string;
+};
+
+export type GroupedBarChartData = {
+  type: "grouped-bar";
+  title?: string;
+  labels: string[];
+  series: Array<{ name: string; values: number[] }>;
+};
+
+export type ChartData = BarChartData | GroupedBarChartData;
 
 export type Question = {
   id: string;
@@ -33,6 +50,7 @@ export type Question = {
   correctIndex: number;
   explanation: string;
   explanationEN?: string;
+  chartData?: ChartData;
 };
 
 export type Participant = {
