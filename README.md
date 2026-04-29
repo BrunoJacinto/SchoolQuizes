@@ -14,23 +14,26 @@ Aplicação web em **Next.js 16 + TypeScript** para treino de Matemática do 5.�
 
 ## Funcionalidades principais
 
-- Banco validado com **300 perguntas**.
-- Distribuição do banco: **100 fáceis, 100 médias, 100 difíceis**.
-- Cada run sorteia **50 perguntas exatas**:
-  - 20 fáceis
-  - 15 médias
-  - 15 difíceis
-- Três modos:
-  - `jogo`
-  - `exame`
-  - `treino`
+- **Dois bancos de perguntas independentes:**
+  - **Matemática (Frações e Decimais):** 300 perguntas (100 fáceis, 100 médias, 100 difíceis)
+  - **Estatística:** 630 perguntas (210 fáceis, 210 médias, 210 difíceis)
+- Seleção do tema na página inicial antes de começar.
+- Cada run sorteia **50 perguntas exatas** com distribuição por dificuldade:
+  - Modo normal: 20 fáceis, 15 médias, 15 difíceis
+  - Modo Cutthroat: 10 fáceis, 20 médias, 20 difíceis
+- **Quatro modos de jogo:**
+  - `jogo` — progressão tipo concurso com feedback visual e patamares de pontuação
+  - `exame` — sem explicações entre perguntas; só o resumo no fim
+  - `treino` — feedback imediato e explicação pedagógica após cada resposta
+  - `cutthroat` — máximo de 3 erros; 1 ajuda 50/50 disponível
 - Progresso linear sem voltar atrás.
 - Recuperação automática de sessão interrompida.
 - Pontuação por patamares visíveis.
-- Envio final de resultados por email.
+- Envio final de resultados por email ao encarregado de educação.
 - Som opcional com toggle.
+- Gráficos SVG integrados nas perguntas de estatística (barras simples e barras justapostas).
 
-## Tópicos incluídos
+## Tópicos — Matemática (Frações e Decimais)
 
 1. Frações equivalentes
 2. Simplificação de frações
@@ -43,24 +46,44 @@ Aplicação web em **Next.js 16 + TypeScript** para treino de Matemática do 5.�
 9. Multiplicação de decimais
 10. Divisão de decimais
 
+## Tópicos — Estatística
+
+1. Valores aproximados
+2. Características quantitativas e qualitativas
+3. Frequências absoluta e relativa
+4. Gráficos de barras
+5. Gráficos de barras justapostas
+6. Moda e média
+7. Probabilidades
+
+## Modo Cutthroat
+
+- Distribuição mais exigente: 10 fáceis / 20 médias / 20 difíceis.
+- O jogo termina ao 3.º erro (não é necessário completar as 50 perguntas).
+- Existe uma ajuda 50/50 que elimina 2 opções erradas — usável uma vez por run.
+- É possível desistir a meio (Quit Game) e receber igualmente o resumo e o email.
+
 ## Estrutura
 
 ```text
 src/
   app/
-    api/results/route.ts      # endpoint interno de envio de resultados
-    globals.css               # base visual global
-    layout.tsx                # layout e metadata
-    page.tsx                  # entrada principal
+    api/results/route.ts           # endpoint interno de envio de resultados
+    globals.css                    # base visual global
+    layout.tsx                     # layout e metadata
+    page.tsx                       # entrada principal com seletor de tema
   components/
-    millionaire-app.tsx       # fluxo completo do jogo
+    millionaire-app.tsx            # fluxo completo do jogo
     millionaire-app.module.css
+    chart-renderer.tsx             # gráficos SVG (bar / grouped-bar)
+    chart-renderer.module.css
   data/
-    question-bank.ts          # geração e validação das 300 perguntas
+    question-bank.ts               # banco de Matemática (300 perguntas)
+    question-bank-statistics.ts    # banco de Estatística (630 perguntas)
   lib/
-    email.ts                  # Resend / SMTP
-    game.ts                   # seleção, pontuação, integridade e resumo
-    storage.ts                # persistência local
+    email.ts                       # Resend / SMTP
+    game.ts                        # seleção, pontuação, integridade e resumo
+    storage.ts                     # persistência local
   types/
     game.ts
 ```
@@ -131,10 +154,7 @@ Lógica:
 - separa o banco por dificuldade
 - embaralha cada conjunto
 - seleciona por rondas entre tópicos para evitar concentração excessiva no mesmo tema
-- junta sempre:
-  - 20 fáceis
-  - 15 médias
-  - 15 difíceis
+- junta com distribuição definida pelo modo (ver acima)
 
 Depois disso, a lista sorteada fica guardada em `localStorage`. Ao atualizar a página, a app recupera exatamente essa mesma lista em vez de voltar a sortear.
 
@@ -149,7 +169,7 @@ O `localStorage` guarda:
 - índice atual
 - respostas dadas
 - pontuação
-- estado da run
+- estado da run (incluindo erros no modo Cutthroat e estado da ajuda 50/50)
 - hora de início
 - hora da pergunta atual
 - estado do envio de email
@@ -189,14 +209,13 @@ npm run lint
 npm run build
 ```
 
-## Estado de verificação
+## Qualidade do banco de perguntas
 
-No momento desta entrega, a validação esperada é:
+O banco de estatística passa por validação automática que verifica:
 
-- `npm run lint`
-- `npm run build`
+- unicidade de todos os IDs
+- exactamente 4 opções por pergunta
+- `correctIndex` entre 0 e 3
+- ausência de opções duplicadas ou matematicamente equivalentes (ex: 3/6 e 1/2)
 
-## Observações
-
-- `NEXT_PUBLIC_TOTAL_QUESTIONS` está preparado para configuração visual, mas a lógica de jogo desta app fixa a run em 50 perguntas, conforme os requisitos.
-- O banco de perguntas é gerado por TypeScript e validado à carga para garantir contagens, unicidade de IDs e 4 opções por pergunta.
+Perguntas que apresentam intencionalmente duas opções equivalentes (tipo "Ambas") estão marcadas como excepções explícitas.
