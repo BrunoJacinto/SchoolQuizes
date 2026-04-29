@@ -20,6 +20,12 @@ export const QUESTION_DISTRIBUTION: Record<Difficulty, number> = {
   dificil: 15,
 };
 
+export const CUTTHROAT_QUESTION_DISTRIBUTION: Record<Difficulty, number> = {
+  facil: 10,
+  medio: 20,
+  dificil: 20,
+};
+
 export const STORAGE_KEY = "milionario-5ano-run";
 export const SOUND_STORAGE_KEY = "milionario-5ano-sound";
 
@@ -147,11 +153,12 @@ function pickQuestionsByDifficulty(difficulty: Difficulty, count: number, bank: 
   return selection;
 }
 
-export function selectRunQuestions(bank: Question[] = QUESTION_BANK): Question[] {
+export function selectRunQuestions(bank: Question[] = QUESTION_BANK, mode: GameMode = "jogo"): Question[] {
+  const dist = mode === "cutthroat" ? CUTTHROAT_QUESTION_DISTRIBUTION : QUESTION_DISTRIBUTION;
   const selected = [
-    ...pickQuestionsByDifficulty("facil", QUESTION_DISTRIBUTION.facil, bank),
-    ...pickQuestionsByDifficulty("medio", QUESTION_DISTRIBUTION.medio, bank),
-    ...pickQuestionsByDifficulty("dificil", QUESTION_DISTRIBUTION.dificil, bank),
+    ...pickQuestionsByDifficulty("facil", dist.facil, bank),
+    ...pickQuestionsByDifficulty("medio", dist.medio, bank),
+    ...pickQuestionsByDifficulty("dificil", dist.dificil, bank),
   ];
 
   assert(selected.length === TOTAL_QUESTIONS, "A run tem de ter exatamente 50 perguntas.");
@@ -176,7 +183,7 @@ export function createRunSession(
     version: SESSION_VERSION,
     participant,
     mode,
-    questions: selectRunQuestions(questionBank),
+    questions: selectRunQuestions(questionBank, mode),
     currentIndex: 0,
     currentQuestionStartedAt: isoDate,
     answers: [],
