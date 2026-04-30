@@ -4,6 +4,8 @@ import styles from "./home.module.css";
 export default function HomePage() {
   return (
     <main className={styles.page}>
+      <div className={styles.spotlightLeft} aria-hidden="true" />
+      <div className={styles.spotlightRight} aria-hidden="true" />
       <header className={styles.header}>
         <img src="/quemquersemilionario.png" alt="Quem Quer Ser Milionário?" className={styles.logo} />
         <h1 className={styles.title}>Quem Quer Ser Milionário?</h1>
@@ -32,7 +34,7 @@ export default function HomePage() {
             <p className={styles.cardDesc}>
               Valores aproximados, características, frequências, gráficos de barras, moda, média e probabilidades.
             </p>
-            <div className={styles.cardMeta}>7 temas · 210 perguntas</div>
+            <div className={styles.cardMeta}>7 temas · 630 perguntas</div>
           </div>
           <span className={styles.cardArrow}>→</span>
         </Link>

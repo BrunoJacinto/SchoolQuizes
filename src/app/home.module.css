@@ -1,4 +1,6 @@
 .page {
+  position: relative;
+  overflow: hidden;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -8,7 +10,35 @@
   gap: 2.5rem;
 }
 
+/* Atmospheric stage glows — matching the game page's tone */
+.spotlightLeft,
+.spotlightRight {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(60px);
+  opacity: 0.4;
+}
+
+.spotlightLeft {
+  top: -80px;
+  left: -100px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(82, 163, 255, 0.55), rgba(82, 163, 255, 0));
+}
+
+.spotlightRight {
+  top: -100px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(168, 78, 255, 0.5), rgba(168, 78, 255, 0));
+}
+
 .header {
+  position: relative;
+  z-index: 1;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -24,11 +54,8 @@
 .title {
   margin: 0;
   font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #e8edff 0%, #a0b4ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 700;
+  color: #fffaf0;
 }
 
 .subtitle {
@@ -38,6 +65,8 @@
 }
 
 .grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.25rem;
@@ -50,33 +79,58 @@
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(13, 20, 48, 0.88), rgba(9, 10, 26, 0.82)),
+    radial-gradient(circle at right top, rgba(146, 181, 255, 0.07), transparent 55%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
   cursor: pointer;
 }
 
 .card:hover {
-  background: rgba(79, 138, 255, 0.1);
-  border-color: rgba(79, 138, 255, 0.4);
+  background:
+    linear-gradient(145deg, rgba(20, 35, 86, 0.92), rgba(14, 14, 38, 0.88)),
+    radial-gradient(circle at right top, rgba(79, 138, 255, 0.14), transparent 55%);
+  border-color: rgba(79, 138, 255, 0.38);
   transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+.card:focus-visible {
+  outline: 2px solid rgba(112, 163, 255, 0.7);
+  outline-offset: 2px;
 }
 
 .cardNew {
-  border-color: rgba(99, 179, 237, 0.25);
+  background:
+    linear-gradient(145deg, rgba(10, 22, 50, 0.9), rgba(8, 12, 30, 0.84)),
+    radial-gradient(circle at right top, rgba(99, 179, 237, 0.07), transparent 55%);
+  border-color: rgba(99, 179, 237, 0.18);
 }
 
 .cardNew:hover {
-  background: rgba(99, 179, 237, 0.12);
-  border-color: rgba(99, 179, 237, 0.5);
+  background:
+    linear-gradient(145deg, rgba(12, 30, 66, 0.92), rgba(9, 14, 34, 0.88)),
+    radial-gradient(circle at right top, rgba(99, 179, 237, 0.13), transparent 55%);
+  border-color: rgba(99, 179, 237, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 40, 70, 0.32);
 }
 
 .cardIcon {
-  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
   flex-shrink: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
 .cardContent {
@@ -116,12 +170,12 @@
 .cardMeta {
   margin-top: 0.25rem;
   font-size: 0.72rem;
-  color: rgba(232, 237, 255, 0.4);
+  color: rgba(232, 237, 255, 0.45);
 }
 
 .cardArrow {
-  font-size: 1.25rem;
-  color: rgba(232, 237, 255, 0.3);
+  font-size: 1.1rem;
+  color: rgba(232, 237, 255, 0.28);
   flex-shrink: 0;
   transition: color 0.2s, transform 0.2s;
 }
@@ -132,6 +186,8 @@
 }
 
 .footer {
+  position: relative;
+  z-index: 1;
   text-align: center;
   font-size: 0.75rem;
   color: rgba(232, 237, 255, 0.3);
