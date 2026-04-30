@@ -218,4 +218,4 @@ O banco de estatística passa por validação automática que verifica:
 - `correctIndex` entre 0 e 3
 - ausência de opções duplicadas ou matematicamente equivalentes (ex: 3/6 e 1/2)
 
-Perguntas que apresentam intencionalmente duas opções equivalentes (tipo "Ambas") estão marcadas como excepções explícitas.
+Cada pergunta tem **exactamente uma resposta correcta**. As 20 perguntas que anteriormente continham opções equivalentes (ex: "1/3" e "3/9", ou "Ambas A e B") foram corrigidas — o par equivalente foi substituído por distratores incorrectos independentes.
