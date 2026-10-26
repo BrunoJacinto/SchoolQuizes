@@ -2,6 +2,14 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MillionaireApp } from '@/components/millionaire-app';
+import { LanguageProvider } from '@/contexts/language-context';
+
+const renderApp = (props = {}) =>
+  render(
+    <LanguageProvider>
+      <MillionaireApp {...props} />
+    </LanguageProvider>
+  );
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -33,12 +41,12 @@ describe('MillionaireApp Component', () => {
 
   describe('Initial State', () => {
     it('should render without crashing', () => {
-      render(<MillionaireApp />);
+      renderApp();
       expect(screen.getByText(/Quem Quer Ser Milionário/i)).toBeInTheDocument();
     });
 
     it('should display app title', async () => {
-      render(<MillionaireApp />);
+      renderApp();
       await waitFor(() => {
         expect(
           screen.getByText(/Quem Quer Ser Milionário.*5.º Ano/i)
@@ -50,7 +58,7 @@ describe('MillionaireApp Component', () => {
 
   describe('Sound Toggle', () => {
     it('should display sound toggle button', async () => {
-      render(<MillionaireApp />);
+      renderApp();
 
       await waitFor(() => {
         expect(screen.getByText(/Som:/i)).toBeInTheDocument();

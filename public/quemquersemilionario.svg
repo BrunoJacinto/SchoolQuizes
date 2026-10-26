@@ -1,0 +1,242 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Background Radial Gradients -->
+    <radialGradient id="spaceGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e2c60" />
+      <stop offset="60%" stop-color="#0a122c" />
+      <stop offset="100%" stop-color="#030612" />
+    </radialGradient>
+
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
+      <stop offset="50%" stop-color="#6366f1" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#0a122c" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Metallic Gold Gradients -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe89e" />
+      <stop offset="25%" stop-color="#d4af37" />
+      <stop offset="50%" stop-color="#fff2b2" />
+      <stop offset="75%" stop-color="#aa7c11" />
+      <stop offset="100%" stop-color="#ffd700" />
+    </linearGradient>
+
+    <linearGradient id="goldGradH" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#c59b27" />
+      <stop offset="30%" stop-color="#fff0aa" />
+      <stop offset="50%" stop-color="#fae17d" />
+      <stop offset="70%" stop-color="#fff0aa" />
+      <stop offset="100%" stop-color="#c59b27" />
+    </linearGradient>
+
+    <linearGradient id="goldBevel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff3c4" />
+      <stop offset="45%" stop-color="#d4af37" />
+      <stop offset="55%" stop-color="#9a7114" />
+      <stop offset="100%" stop-color="#e8c15a" />
+    </linearGradient>
+
+    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#701a75" />
+    </linearGradient>
+
+    <!-- Glow & Shadow Filters -->
+    <filter id="goldDropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.8" />
+    </filter>
+
+    <filter id="ambientGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Arc Path for Text -->
+    <path id="arcTop" d="M 115,260 A 185,185 0 0,1 485,260" fill="none" />
+    <path id="arcBottom" d="M 140,360 A 180,180 0 0,0 460,360" fill="none" />
+  </defs>
+
+  <!-- Ambient Outer Glow -->
+  <circle cx="300" cy="300" r="280" fill="url(#centerGlow)" />
+
+  <!-- Outer Sunburst / Ray Points (24 segments) -->
+  <g id="sunburst" stroke="url(#goldGrad)" stroke-width="2" opacity="0.85">
+    <!-- Starburst points radiating around ring -->
+    <line x1="300" y1="20" x2="300" y2="42" />
+    <line x1="300" y1="580" x2="300" y2="558" />
+    <line x1="20" y1="300" x2="42" y2="300" />
+    <line x1="580" y1="300" x2="558" y2="300" />
+
+    <line x1="102" y1="102" x2="118" y2="118" />
+    <line x1="498" y1="498" x2="482" y2="482" />
+    <line x1="498" y1="102" x2="482" y2="118" />
+    <line x1="102" y1="498" x2="118" y2="482" />
+
+    <line x1="192" y1="38" x2="201" y2="59" />
+    <line x1="408" y1="38" x2="399" y2="59" />
+    <line x1="192" y1="562" x2="201" y2="541" />
+    <line x1="408" y1="562" x2="399" y2="541" />
+
+    <line x1="38" y1="192" x2="59" y2="201" />
+    <line x1="38" y1="408" x2="59" y2="399" />
+    <line x1="562" y1="192" x2="541" y2="201" />
+    <line x1="562" y1="408" x2="541" y2="399" />
+
+    <line x1="56" y1="140" x2="75" y2="152" />
+    <line x1="544" y1="140" x2="525" y2="152" />
+    <line x1="56" y1="460" x2="75" y2="448" />
+    <line x1="544" y1="460" x2="525" y2="448" />
+
+    <line x1="140" y1="56" x2="152" y2="75" />
+    <line x1="460" y1="56" x2="448" y2="75" />
+    <line x1="140" y1="544" x2="152" y2="525" />
+    <line x1="460" y1="544" x2="448" y2="525" />
+  </g>
+
+  <!-- Diamond Accents around Outer Ring -->
+  <g fill="url(#goldGrad)">
+    <polygon points="300,32 305,42 300,52 295,42" />
+    <polygon points="300,568 305,558 300,548 295,558" />
+    <polygon points="32,300 42,305 52,300 42,295" />
+    <polygon points="568,300 558,305 548,300 558,295" />
+  </g>
+
+  <!-- Outer Concentric Golden Medallion Rings -->
+  <circle cx="300" cy="300" r="255" fill="none" stroke="url(#goldGrad)" stroke-width="4" filter="url(#goldDropShadow)" />
+  <circle cx="300" cy="300" r="248" fill="none" stroke="#2a3d75" stroke-width="1.5" />
+  <circle cx="300" cy="300" r="242" fill="url(#spaceGrad)" stroke="url(#goldGradH)" stroke-width="3" />
+
+  <!-- Inner Guilloche Ring -->
+  <circle cx="300" cy="300" r="230" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.75" />
+  <circle cx="300" cy="300" r="222" fill="none" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5" />
+
+  <!-- Spotlight Flare in Center Background -->
+  <ellipse cx="300" cy="240" rx="180" ry="100" fill="url(#centerGlow)" />
+
+  <!-- Upper Arc Text: QUEM QUER SER -->
+  <text font-family="'Montserrat', 'Arial Black', -apple-system, sans-serif" font-size="28" font-weight="900" letter-spacing="4" fill="url(#goldBevel)" stroke="#111827" stroke-width="1.5" filter="url(#goldDropShadow)">
+    <textPath href="#arcTop" startOffset="50%" text-anchor="middle">
+      QUEM QUER SER
+    </textPath>
+  </text>
+
+  <!-- Main Title: MILIONÁRIO? -->
+  <!-- Shadow/Extrusion layer -->
+  <text x="300" y="228" text-anchor="middle" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="52" font-weight="900" letter-spacing="3" fill="#040817" stroke="#000000" stroke-width="7" stroke-linejoin="round">
+    MILIONÁRIO?
+  </text>
+  <!-- Foreground metallic gold layer -->
+  <text x="300" y="226" text-anchor="middle" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="52" font-weight="900" letter-spacing="3" fill="url(#goldGradH)" stroke="#664604" stroke-width="1" filter="url(#goldDropShadow)">
+    MILIONÁRIO?
+  </text>
+
+  <!-- Diamond Divider Dots below Milionário -->
+  <g fill="url(#goldGrad)" transform="translate(0, 5)">
+    <polygon points="300,242 304,247 300,252 296,247" />
+    <circle cx="280" cy="247" r="2.5" />
+    <circle cx="320" cy="247" r="2.5" />
+    <line x1="220" y1="247" x2="268" y2="247" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <line x1="332" y1="247" x2="380" y2="247" stroke="url(#goldGrad)" stroke-width="1.5" />
+  </g>
+
+  <!-- Middle Banner / Ribbon: ESCOLA CONDE DE OEIRAS -->
+  <g id="middleBanner" transform="translate(0, 10)">
+    <!-- Ribbon tails -->
+    <path d="M 125,282 L 105,272 L 125,262 L 140,282 Z" fill="#0b112c" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <path d="M 475,282 L 495,272 L 475,262 L 460,282 Z" fill="#0b112c" stroke="url(#goldGrad)" stroke-width="1.5" />
+
+    <!-- Ribbon main body -->
+    <path d="M 130,260 L 470,260 L 455,290 L 145,290 Z" fill="url(#ribbonGrad)" stroke="url(#goldGrad)" stroke-width="2.5" filter="url(#goldDropShadow)" />
+    
+    <!-- Portuguese Flag Accent (mini shield) -->
+    <g transform="translate(162, 266) scale(0.65)">
+      <rect x="0" y="0" width="12" height="18" fill="#15803d" rx="2" />
+      <rect x="12" y="0" width="16" height="18" fill="#dc2626" rx="2" />
+      <circle cx="12" cy="9" r="4.5" fill="#eab308" />
+      <rect x="10.5" y="6" width="3" height="6" fill="#ffffff" />
+      <rect x="11.2" y="7" width="1.6" height="4" fill="#1d4ed8" />
+    </g>
+
+    <!-- School Text -->
+    <text x="308" y="281" text-anchor="middle" font-family="'Montserrat', 'Helvetica Neue', sans-serif" font-size="16" font-weight="800" letter-spacing="3.5" fill="#f8fafc" stroke="#000" stroke-width="0.5">
+      ESCOLA CONDE DE OEIRAS
+    </text>
+  </g>
+
+  <!-- Central Academic Math Crest / Shield -->
+  <g id="centerCrest" transform="translate(0, 10)">
+    <!-- Shield Outer Gold Rim -->
+    <path d="M 245,315 L 355,315 C 355,365 335,415 300,435 C 265,415 245,365 245,315 Z" 
+          fill="url(#shieldGrad)" stroke="url(#goldGrad)" stroke-width="3.5" filter="url(#goldDropShadow)" />
+
+    <!-- Inner Shield Inset -->
+    <path d="M 252,322 L 348,322 C 348,362 331,405 300,422 C 269,405 252,362 252,322 Z" 
+          fill="none" stroke="url(#goldGrad)" stroke-width="1" opacity="0.6" />
+
+    <!-- Open Book Icon inside Shield -->
+    <g id="openBook" transform="translate(272, 338) scale(1.15)">
+      <!-- Left Page -->
+      <path d="M 24,18 C 17,14 7,14 1,17 L 1,40 C 7,37 17,37 24,41 Z" fill="#f8fafc" stroke="#1e293b" stroke-width="1.2" />
+      <!-- Right Page -->
+      <path d="M 26,18 C 33,14 43,14 49,17 L 49,40 C 43,37 33,37 26,41 Z" fill="#f1f5f9" stroke="#1e293b" stroke-width="1.2" />
+      <!-- Book Spine / Center Line -->
+      <path d="M 25,18 L 25,41" stroke="#d4af37" stroke-width="2" />
+      <!-- Page text lines hint -->
+      <line x1="6" y1="23" x2="19" y2="21" stroke="#94a3b8" stroke-width="1" />
+      <line x1="6" y1="28" x2="19" y2="26" stroke="#94a3b8" stroke-width="1" />
+      <line x1="6" y1="33" x2="19" y2="31" stroke="#94a3b8" stroke-width="1" />
+      <line x1="31" y1="21" x2="44" y2="23" stroke="#94a3b8" stroke-width="1" />
+      <line x1="31" y1="26" x2="44" y2="28" stroke="#94a3b8" stroke-width="1" />
+      <line x1="31" y1="31" x2="44" y2="33" stroke="#94a3b8" stroke-width="1" />
+    </g>
+
+    <!-- Floating Math Symbols Flanking the Shield -->
+    <!-- Left Flank: % and 1/2 -->
+    <g fill="url(#goldGradH)" filter="url(#goldDropShadow)">
+      <text x="202" y="360" font-family="'Montserrat', sans-serif" font-size="34" font-weight="900">%</text>
+      <text x="212" y="405" font-family="'Montserrat', sans-serif" font-size="24" font-weight="800">½</text>
+      <circle cx="185" cy="380" r="3" fill="#38bdf8" />
+    </g>
+
+    <!-- Right Flank: ? and + − × ÷ -->
+    <g fill="url(#goldGradH)" filter="url(#goldDropShadow)">
+      <circle cx="395" cy="350" r="19" fill="#0d1b3e" stroke="url(#goldGrad)" stroke-width="2" />
+      <text x="395" y="358" text-anchor="middle" font-family="'Cinzel', serif" font-size="24" font-weight="900" fill="url(#goldGrad)">?</text>
+      <text x="382" y="400" font-family="'Montserrat', sans-serif" font-size="20" font-weight="900">＋</text>
+      <text x="408" y="400" font-family="'Montserrat', sans-serif" font-size="20" font-weight="900">÷</text>
+      <circle cx="420" cy="375" r="3" fill="#38bdf8" />
+    </g>
+  </g>
+
+  <!-- Lower Banner: MATEMÁTICA -->
+  <g id="bottomBanner" transform="translate(0, 15)">
+    <!-- Ribbon Shape -->
+    <path d="M 185,465 L 415,465 L 400,498 L 200,498 Z" fill="url(#ribbonGrad)" stroke="url(#goldGrad)" stroke-width="2.5" filter="url(#goldDropShadow)" />
+    
+    <!-- Ribbon Wings -->
+    <path d="M 185,475 L 160,462 L 175,492 L 195,490 Z" fill="#0b112c" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <path d="M 415,475 L 440,462 L 425,492 L 405,490 Z" fill="#0b112c" stroke="url(#goldGrad)" stroke-width="1.5" />
+
+    <text x="300" y="490" text-anchor="middle" font-family="'Montserrat', 'Arial Black', sans-serif" font-size="22" font-weight="900" letter-spacing="5" fill="url(#goldGradH)" stroke="#000" stroke-width="0.8">
+      MATEMÁTICA
+    </text>
+  </g>
+
+  <!-- Bottom Crest Star & EDUCAÇÃO Subtitle -->
+  <g transform="translate(0, 20)">
+    <!-- Gold 5-point star -->
+    <polygon points="300,518 304,528 315,528 306,535 309,545 300,539 291,545 294,535 285,528 296,528" fill="url(#goldGrad)" />
+    
+    <text x="300" y="558" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" letter-spacing="4" fill="#93c5fd" opacity="0.9">
+      EDUCAÇÃO &amp; JOGO
+    </text>
+  </g>
+</svg>
