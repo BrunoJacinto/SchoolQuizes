@@ -9,7 +9,7 @@ export default function HomePage() {
       <header className={styles.header}>
         <img src="/quemquersemilionario.png" alt="Quem Quer Ser Milionário?" className={styles.logo} />
         <h1 className={styles.title}>Quem Quer Ser Milionário?</h1>
-        <p className={styles.subtitle}>5.º Ano — Escolhe o teste para treinar</p>
+        <p className={styles.subtitle}>Escolhe o ano e o teste para treinar</p>
       </header>
 
       <div className={styles.grid}>
@@ -35,6 +35,19 @@ export default function HomePage() {
               Valores aproximados, características, frequências, gráficos de barras, moda, média e probabilidades.
             </p>
             <div className={styles.cardMeta}>7 temas · 630 perguntas</div>
+          </div>
+          <span className={styles.cardArrow}>→</span>
+        </Link>
+
+        <Link href="/test/6ano" className={styles.card + " " + styles.cardNew}>
+          <div className={styles.cardIcon}>🔢</div>
+          <div className={styles.cardContent}>
+            <span className={styles.cardLabel + " " + styles.cardLabelNew}>6.º F · Novo Teste</span>
+            <h2 className={styles.cardTitle}>Matemática — Números e Polígonos</h2>
+            <p className={styles.cardDesc}>
+              Fatores primos, m.m.c., m.d.c., potências e classificação de polígonos.
+            </p>
+            <div className={styles.cardMeta}>9 temas · 63 perguntas</div>
           </div>
           <span className={styles.cardArrow}>→</span>
         </Link>
