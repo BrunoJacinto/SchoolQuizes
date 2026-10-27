@@ -1,4 +1,5 @@
 import { QUESTION_BANK } from '@/data/question-bank';
+import { MATH_6_QUESTION_BANK } from '@/data/question-bank-6ano';
 
 describe('Question Bank', () => {
   describe('Bank Structure', () => {
@@ -139,6 +140,56 @@ describe('Question Bank', () => {
           expect(option.length).toBeLessThan(500);
         });
       });
+    });
+  });
+
+  describe('6.º Ano Question Bank', () => {
+    it('should have at least 500 questions (540 questions)', () => {
+      expect(MATH_6_QUESTION_BANK.length).toBeGreaterThanOrEqual(500);
+      expect(MATH_6_QUESTION_BANK).toHaveLength(540);
+    });
+
+    it('should have balanced difficulty distribution', () => {
+      const easy = MATH_6_QUESTION_BANK.filter((q) => q.difficulty === 'facil');
+      const medium = MATH_6_QUESTION_BANK.filter((q) => q.difficulty === 'medio');
+      const hard = MATH_6_QUESTION_BANK.filter((q) => q.difficulty === 'dificil');
+
+      expect(easy).toHaveLength(180);
+      expect(medium).toHaveLength(180);
+      expect(hard).toHaveLength(180);
+    });
+
+    it('should have unique question IDs', () => {
+      const ids = new Set(MATH_6_QUESTION_BANK.map((q) => q.id));
+      expect(ids.size).toBe(540);
+    });
+
+    it('should have valid structure and unique options per question', () => {
+      MATH_6_QUESTION_BANK.forEach((question) => {
+        expect(question.id).toBeDefined();
+        expect(question.topic).toBeDefined();
+        expect(question.difficulty).toMatch(/^(facil|medio|dificil)$/);
+        expect(question.prompt.length).toBeGreaterThan(0);
+        expect(question.explanation.length).toBeGreaterThan(0);
+        expect(question.options).toHaveLength(4);
+        expect(new Set(question.options).size).toBe(4);
+        expect(question.correctIndex).toBeGreaterThanOrEqual(0);
+        expect(question.correctIndex).toBeLessThan(4);
+        expect(question.options[question.correctIndex]).toBeDefined();
+      });
+    });
+
+    it('should support both normal and cutthroat mode runs without errors', () => {
+      const { selectRunQuestions } = require('@/lib/game');
+      const normalRun = selectRunQuestions(MATH_6_QUESTION_BANK, 'jogo');
+      const cutthroatRun = selectRunQuestions(MATH_6_QUESTION_BANK, 'cutthroat');
+
+      expect(normalRun).toHaveLength(50);
+      expect(cutthroatRun).toHaveLength(50);
+
+      // Verify no duplicate IDs in any run
+      expect(new Set(normalRun.map((q: any) => q.id)).size).toBe(50);
+      expect(new Set(cutthroatRun.map((q: any) => q.id)).size).toBe(50);
     });
   });
 });

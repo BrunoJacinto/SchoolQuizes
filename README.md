@@ -14,9 +14,10 @@ Aplicação web em **Next.js 16 + TypeScript** para treino de Matemática do 5.�
 
 ## Funcionalidades principais
 
-- **Dois bancos de perguntas independentes:**
-  - **Matemática (Frações e Decimais):** 300 perguntas (100 fáceis, 100 médias, 100 difíceis)
-  - **Estatística:** 630 perguntas (210 fáceis, 210 médias, 210 difíceis)
+- **Três bancos de perguntas independentes (1 470 perguntas no total):**
+  - **Matemática 5.º Ano (Frações e Decimais):** 300 perguntas (100 fáceis, 100 médias, 100 difíceis)
+  - **Estatística 5.º Ano:** 630 perguntas (210 fáceis, 210 médias, 210 difíceis)
+  - **Matemática 6.º Ano (Números e Polígonos):** 540 perguntas (180 fáceis, 180 médias, 180 difíceis)
 - Seleção do tema na página inicial antes de começar.
 - Cada run sorteia **50 perguntas exatas** com distribuição por dificuldade:
   - Modo normal: 20 fáceis, 15 médias, 15 difíceis
@@ -56,6 +57,18 @@ Aplicação web em **Next.js 16 + TypeScript** para treino de Matemática do 5.�
 6. Moda e média
 7. Probabilidades
 
+## Tópicos — Matemática 6.º Ano (Números e Polígonos)
+
+1. Decomposição em fatores primos
+2. Mínimo múltiplo comum (m.m.c.)
+3. Máximo divisor comum (m.d.c.)
+4. Multiplicação de potências com a mesma base
+5. Divisão de potências com a mesma base
+6. Multiplicação de potências com o mesmo expoente
+7. Divisão de potências com o mesmo expoente
+8. Polígonos côncavos e convexos
+9. Polígonos regulares e irregulares
+
 ## Modo Cutthroat
 
 - Distribuição mais exigente: 10 fáceis / 20 médias / 20 difíceis.
@@ -78,8 +91,9 @@ src/
     chart-renderer.tsx             # gráficos SVG (bar / grouped-bar)
     chart-renderer.module.css
   data/
-    question-bank.ts               # banco de Matemática (300 perguntas)
-    question-bank-statistics.ts    # banco de Estatística (630 perguntas)
+    question-bank.ts               # banco de Matemática 5.º ano (300 perguntas)
+    question-bank-statistics.ts    # banco de Estatística 5.º ano (630 perguntas)
+    question-bank-6ano.ts          # banco de Matemática 6.º ano (540 perguntas)
   lib/
     email.ts                       # Resend / SMTP
     game.ts                        # seleção, pontuação, integridade e resumo

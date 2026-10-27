@@ -43,6 +43,12 @@ describe('Game Utilities', () => {
   });
 
   describe('selectRunQuestions', () => {
+    it('should select exactly 50 questions for 6ano in cutthroat', () => {
+      const { MATH_6_QUESTION_BANK } = require('@/data/question-bank-6ano');
+      const questions = selectRunQuestions(MATH_6_QUESTION_BANK, 'cutthroat');
+      expect(questions).toHaveLength(TOTAL_QUESTIONS);
+    });
+
     it('should select exactly 50 questions', () => {
       const questions = selectRunQuestions();
       expect(questions).toHaveLength(TOTAL_QUESTIONS);

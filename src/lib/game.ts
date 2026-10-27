@@ -122,15 +122,23 @@ function groupByTopic(questions: Question[]): Map<Topic, Question[]> {
   return buckets;
 }
 
-function pickQuestionsByDifficulty(difficulty: Difficulty, count: number, bank: Question[] = QUESTION_BANK): Question[] {
-  const pool = bank.filter((question) => question.difficulty === difficulty);
+function pickQuestionsByDifficulty(
+  difficulty: Difficulty,
+  count: number,
+  bank: Question[] = QUESTION_BANK,
+  selectedIds: Set<string> = new Set(),
+): Question[] {
+  const pool = bank.filter((question) => question.difficulty === difficulty && !selectedIds.has(question.id));
   const grouped = groupByTopic(shuffle(pool));
   const topics = shuffle([...grouped.keys()]);
   const selection: Question[] = [];
+  const maxAvailable = Math.min(count, pool.length);
 
-  while (selection.length < count) {
+  while (selection.length < maxAvailable) {
     const roundOrder = shuffle(topics.filter((topic) => (grouped.get(topic)?.length ?? 0) > 0));
-    assert(roundOrder.length > 0, `Não há perguntas suficientes para ${difficulty}.`);
+    if (roundOrder.length === 0) {
+      break;
+    }
 
     for (const topic of roundOrder) {
       const topicQuestions = grouped.get(topic);
@@ -142,9 +150,10 @@ function pickQuestionsByDifficulty(difficulty: Difficulty, count: number, bank: 
       const nextQuestion = topicQuestions.shift();
       if (nextQuestion) {
         selection.push(nextQuestion);
+        selectedIds.add(nextQuestion.id);
       }
 
-      if (selection.length === count) {
+      if (selection.length === maxAvailable) {
         break;
       }
     }
@@ -155,13 +164,53 @@ function pickQuestionsByDifficulty(difficulty: Difficulty, count: number, bank: 
 
 export function selectRunQuestions(bank: Question[] = QUESTION_BANK, mode: GameMode = "jogo"): Question[] {
   const dist = mode === "cutthroat" ? CUTTHROAT_QUESTION_DISTRIBUTION : QUESTION_DISTRIBUTION;
-  const selected = [
-    ...pickQuestionsByDifficulty("facil", dist.facil, bank),
-    ...pickQuestionsByDifficulty("medio", dist.medio, bank),
-    ...pickQuestionsByDifficulty("dificil", dist.dificil, bank),
+  const totalTarget = Math.min(TOTAL_QUESTIONS, bank.length);
+
+  // Measure available counts per difficulty
+  const counts: Record<Difficulty, number> = {
+    facil: bank.filter((q) => q.difficulty === "facil").length,
+    medio: bank.filter((q) => q.difficulty === "medio").length,
+    dificil: bank.filter((q) => q.difficulty === "dificil").length,
+  };
+
+  // Initial allocation: up to target, bounded by availability
+  const allocated: Record<Difficulty, number> = {
+    dificil: Math.min(dist.dificil, counts.dificil),
+    medio: Math.min(dist.medio, counts.medio),
+    facil: Math.min(dist.facil, counts.facil),
+  };
+
+  let needed = totalTarget - (allocated.facil + allocated.medio + allocated.dificil);
+
+  // Redistribute any shortfall: for cutthroat, prefer dificil -> medio -> facil; otherwise facil -> medio -> dificil
+  const priorityOrder: Difficulty[] =
+    mode === "cutthroat" ? ["dificil", "medio", "facil"] : ["facil", "medio", "dificil"];
+
+  for (const diff of priorityOrder) {
+    if (needed <= 0) break;
+    const canAdd = counts[diff] - allocated[diff];
+    const adding = Math.min(needed, canAdd);
+    allocated[diff] += adding;
+    needed -= adding;
+  }
+
+  const selectedIds = new Set<string>();
+  const selected: Question[] = [
+    ...pickQuestionsByDifficulty("facil", allocated.facil, bank, selectedIds),
+    ...pickQuestionsByDifficulty("medio", allocated.medio, bank, selectedIds),
+    ...pickQuestionsByDifficulty("dificil", allocated.dificil, bank, selectedIds),
   ];
 
-  assert(selected.length === TOTAL_QUESTIONS, "A run tem de ter exatamente 50 perguntas.");
+  if (selected.length < totalTarget) {
+    const remaining = shuffle(bank.filter((q) => !selectedIds.has(q.id)));
+    for (const q of remaining) {
+      if (selected.length >= totalTarget) break;
+      selected.push(q);
+      selectedIds.add(q.id);
+    }
+  }
+
+  assert(selected.length === totalTarget, `A run tem de ter exatamente ${totalTarget} perguntas.`);
 
   return clone(selected);
 }

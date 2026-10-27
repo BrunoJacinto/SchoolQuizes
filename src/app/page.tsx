@@ -43,7 +43,7 @@ export default function HomePage() {
         {/* Quick Highlights / Bangs Bar */}
         <div className={styles.highlightsBar}>
           <div className={styles.highlightItem}>
-            <span className={styles.highlightNum}>990+</span>
+            <span className={styles.highlightNum}>1 470+</span>
             <span className={styles.highlightLabel}>Perguntas</span>
           </div>
           <div className={styles.highlightDivider} />
@@ -76,7 +76,7 @@ export default function HomePage() {
                 <span className={styles.bangPillClass}>TURMA 6.º F</span>
                 <span className={styles.bangPillActive}>● TESTE EM DESTAQUE</span>
               </div>
-              <span className={styles.featuredMetaPill}>9 temas · 63 perguntas</span>
+              <span className={styles.featuredMetaPill}>9 temas · 540 perguntas</span>
             </div>
 
             <div className={styles.featuredBody}>
