@@ -1,4 +1,5 @@
 import type { Difficulty, Question } from "@/types/game";
+import { NEW_NATUREZA_1_QUESTION_BANK } from "@/data/question-bank-ciencias-natureza-novas";
 
 const items: Array<[string, Difficulty, string, [string, string, string, string], number, string]> = [
   ["Células", "facil", "Qual é a unidade básica que constitui todos os seres vivos?", ["A célula", "O órgão", "O sistema", "O tecido"], 0, "A célula é a unidade básica estrutural e funcional dos seres vivos."],
@@ -55,11 +56,13 @@ const items: Array<[string, Difficulty, string, [string, string, string, string]
   ["Defesas e prevenção", "dificil", "Qual conjunto de medidas atua em diferentes vias de transmissão de infeções?", ["Vacinação, higiene das mãos e ventilação dos espaços", "Antibióticos para todos e partilha de objetos", "Evitar lavar as mãos e fechar janelas", "Usar apenas desinfetante para todas as doenças"], 0, "Vacinação, higiene e ventilação são medidas complementares de prevenção, adequadas a riscos distintos."],
 ];
 
-// shortcut: entries vary by option order, not by concept; add new concepts when the syllabus expands.
+// Keep the existing 50 questions, add 50 new ones, and vary answer positions within each set.
 export const NATUREZA_1_QUESTION_BANK: Question[] = items.flatMap(
   ([topic, difficulty, prompt, options, correctIndex, explanation], index) =>
-    Array.from({ length: 10 }, (_, variant) => {
-      const order = [0, 1, 2, 3].map((_, optionIndex) => (optionIndex + variant) % 4);
+    Array.from({ length: 5 }, (_, variant) => {
+      const order = variant === 4
+        ? [0, 2, 1, 3]
+        : [0, 1, 2, 3].map((_, optionIndex) => (optionIndex + variant) % 4);
       return {
         id: `ciencias-natureza-1-${index + 1}-${variant + 1}`,
         topic,
@@ -70,4 +73,4 @@ export const NATUREZA_1_QUESTION_BANK: Question[] = items.flatMap(
         explanation,
       };
     }),
-);
+).concat(NEW_NATUREZA_1_QUESTION_BANK);
