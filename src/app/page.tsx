@@ -37,7 +37,7 @@ export default function HomePage() {
 
         <h1 className={styles.title}>Quem Quer Ser Milionário?</h1>
         <p className={styles.subtitle}>
-          Treina a Matemática como num concurso de televisão: 50 perguntas, patamares e ajudas!
+          Treina para os testes como num concurso de televisão: 50 perguntas, patamares e ajudas!
         </p>
 
         {/* Quick Highlights / Bangs Bar */}
@@ -113,6 +113,33 @@ export default function HomePage() {
           </Link>
         </section>
 
+        <section className={styles.trackSection}>
+          <div className={styles.trackHeader}>
+            <span className={styles.trackLine} />
+            <h3 className={styles.trackTitle}>Ciências da Natureza</h3>
+            <span className={styles.trackLine} />
+          </div>
+          <div className={styles.grid}>
+            <Link href="/test/ciencias-natureza-1" className={styles.card}>
+              <div className={styles.cardIconBox}>
+                <span className={styles.cardIcon}>🔬</span>
+              </div>
+              <div className={styles.cardContent}>
+                <div className={styles.cardLabelRow}>
+                  <span className={styles.cardLabelBlue}>CIÊNCIAS · TESTE 1</span>
+                  <span className={styles.cardBadge}>500 perguntas</span>
+                </div>
+                <h4 className={styles.cardTitle}>Seres vivos e microrganismos</h4>
+                <p className={styles.cardDesc}>
+                  Células, organização dos seres vivos, microscópio ótico, microrganismos, defesas, prevenção e tratamento de infeções.
+                </p>
+                <div className={styles.cardMeta}>Tema 2 · Unidades 1.1 e 1.2</div>
+              </div>
+              <div className={styles.cardArrow}>→</div>
+            </Link>
+          </div>
+        </section>
+
         {/* ==============================================
             5.º ANO TESTS TRACK
             ============================================== */}
@@ -166,7 +193,7 @@ export default function HomePage() {
       </div>
 
       <footer className={styles.footer}>
-        <p>Escola Conde de Oeiras · Plataforma de Estudo e Gamificação de Matemática</p>
+        <p>Escola Conde de Oeiras · Plataforma de Estudo e Gamificação</p>
         <p className={styles.footerSub}>Desenvolvido com carinho por Bruno Jacinto</p>
       </footer>
     </main>
